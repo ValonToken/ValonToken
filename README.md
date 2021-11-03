@@ -10,7 +10,7 @@ The following assumes the use of `node@>=10`.
 
 ## Install Dependencies
 
-`yarn`
+`yarn install`
 
 ## Compile Contracts
 
@@ -18,4 +18,5 @@ The following assumes the use of `node@>=10`.
 
 ## Run Tests
 
-`yarn test`
+`yarn testValonToken`<br/>
+`yarn testValonStaking`
