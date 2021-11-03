@@ -1,5 +1,8 @@
-# Valon Master
+# Valon Token
+Token & Staking contracts for Valon Decentralized Exchange
 
+Website: https://valon.info
+Twitter: https://twitter.com/valontoken
 
 # Local Development
 
