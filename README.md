@@ -1,8 +1,18 @@
-### Valon Token 👋
-
-Valon Token Contract
+# Valon Master
 
 
-https://valon.info
+# Local Development
 
-https://twitter.com/ValonToken
+The following assumes the use of `node@>=10`.
+
+## Install Dependencies
+
+`yarn`
+
+## Compile Contracts
+
+`yarn compile`
+
+## Run Tests
+
+`yarn test`
