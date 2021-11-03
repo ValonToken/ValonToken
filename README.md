@@ -2,7 +2,7 @@
 Token & Staking contracts for Valon Decentralized Exchange
 
 Website: https://valon.info
-Twitter: https://twitter.com/valontoken
+<br/>Twitter: https://twitter.com/valontoken
 
 # Local Development
 
