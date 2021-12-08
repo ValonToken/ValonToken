@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai';
-import { Contract } from 'ethers';
-import { MaxUint256 } from 'ethers/constants';
-import { bigNumberify, hexlify, keccak256, defaultAbiCoder, toUtf8Bytes, BigNumber } from 'ethers/utils';
+import { ethers, Contract } from 'ethers';
+//import { MaxUint256 } from 'ethers/constants';
+//import { ethers.BigNumber.from, hexlify, keccak256, defaultAbiCoder, toUtf8Bytes, BigNumber } from 'ethers/utils';
 import { solidity, MockProvider, deployContract } from 'ethereum-waffle';
 import { ecsign } from 'ethereumjs-util';
 import { expandTo18Decimals, getApprovalDigest, _to18Digits } from './shared/utilities';
@@ -14,13 +14,31 @@ chai.use(solidity)
 const TOTAL_SUPPLY = expandTo18Decimals(300000000);
 const DIFFICULTY = 100;
 const REWARD_CAP = 300000000;
-const REWARDS_PER_BLOCK = bigNumberify('4822530864197531000');
+const REWARDS_PER_BLOCK = ethers.BigNumber.from('4822530864197531000');
 
 describe('ValonStaking', () => {
   const provider = new MockProvider({
-    hardfork: 'istanbul',
-    mnemonic: 'horn horn horn horn horn horn horn horn horn horn horn horn',
-    gasLimit: 9999999
+    ganacheOptions: {
+      accounts: [
+        {
+          balance: '10000000000000000000000',
+          secretKey: Buffer.from('7af6d902274fb54ea69a3f43cc5388aa5c3adf346f0e1d48bf698f16d2e3962a', 'hex')
+        },
+        {
+          balance: '10000000000000000000000',
+          secretKey: Buffer.from('7af6d902274fb54ea69a3f43cc5388aa5c3adf346f0e1d48bf698f16d2e3962b', 'hex')
+        },
+        {
+          balance: '10000000000000000000000',
+          secretKey: Buffer.from('7af6d902274fb54ea69a3f43cc5388aa5c3adf346f0e1d48bf698f16d2e3962c', 'hex')
+        },
+        {
+          balance: '10000000000000000000000',
+          secretKey: Buffer.from('7af6d902274fb54ea69a3f43cc5388aa5c3adf346f0e1d48bf698f16d2e3962d', 'hex')
+        }
+      ],
+      gasLimit: 9999999
+    }
   });
 
   const [wallet, other, other2, other3] = provider.getWallets();
@@ -40,7 +58,7 @@ describe('ValonStaking', () => {
     walletUserToken.transferOwnership(staking.address);
   });
 
-  /*it('create pool', async () => {
+  it('create pool', async () => {
     const walletUser = staking.connect(provider.getSigner(wallet.address));
     let poolInfo = await walletUser.getPoolInfo(lpt1.address);
     expect(poolInfo[0]).to.eq('0x0000000000000000000000000000000000000000');
@@ -75,7 +93,7 @@ describe('ValonStaking', () => {
 
     expect(otherUserStaking.addStake(lpt1.address, expandTo18Decimals(101))).to.reverted;
     expect(otherUserStaking.addStake(lpt2.address, expandTo18Decimals(100))).to.reverted;
-    expect(otherUserStaking.addStake(lpt1.address, bigNumberify(0))).to.reverted;
+    expect(otherUserStaking.addStake(lpt1.address, ethers.BigNumber.from(0))).to.reverted;
     await otherUserStaking.addStake(lpt1.address, expandTo18Decimals(100));
     expect(await walletUserStaking.getLptBalance(lpt1.address, staking.address)).to.eq(expandTo18Decimals(100));
     const otherUserStakeAmount = await otherUserStaking.getStake(lpt1.address, other.address);
@@ -137,7 +155,7 @@ describe('ValonStaking', () => {
 
     // difficulty calculations
     await walletUserStaking.setTotalRewards(expandTo18Decimals(30000000)); // 10%
-    const diff = bigNumberify(DIFFICULTY);
+    const diff = ethers.BigNumber.from(DIFFICULTY);
     let newDiff = diff.sub(diff.div(10));
     expect(await otherUserStaking.getDifficulty()).to.eq(newDiff.toString());
     let reward = REWARDS_PER_BLOCK.sub(REWARDS_PER_BLOCK.div(10));
@@ -150,15 +168,15 @@ describe('ValonStaking', () => {
     expect(await walletUserStaking.getRewardsPerBlock()).to.eq(reward);
 
     await walletUserStaking.setTotalRewards(expandTo18Decimals(300000000)); // 100%
-    newDiff = bigNumberify(1);
+    newDiff = ethers.BigNumber.from(1);
     expect(await otherUserStaking.getDifficulty()).to.eq(newDiff.toString());
-    reward = REWARDS_PER_BLOCK.div(bigNumberify(DIFFICULTY));
+    reward = REWARDS_PER_BLOCK.div(ethers.BigNumber.from(DIFFICULTY));
     expect(await walletUserStaking.getRewardsPerBlock()).to.eq(reward);
 
     await walletUserStaking.setTotalRewards(expandTo18Decimals(600000000)); // 200%
-    newDiff = bigNumberify(1);
+    newDiff = ethers.BigNumber.from(1);
     expect(await otherUserStaking.getDifficulty()).to.eq(newDiff.toString());
-    reward = REWARDS_PER_BLOCK.div(bigNumberify(DIFFICULTY));
+    reward = REWARDS_PER_BLOCK.div(ethers.BigNumber.from(DIFFICULTY));
     expect(await walletUserStaking.getRewardsPerBlock()).to.eq(reward);
 
     await walletUserStaking.setTotalRewards(expandTo18Decimals(64680000)); // 21.56%
@@ -176,7 +194,7 @@ describe('ValonStaking', () => {
     //difficulty with more precision
     await walletUserStaking.setDifficulty(10000);
     await walletUserStaking.setTotalRewards(expandTo18Decimals(30000000)); // 10%
-    let diffPrecision = bigNumberify(10000);
+    let diffPrecision = ethers.BigNumber.from(10000);
     newDiff = diffPrecision.sub(diffPrecision.div(10));
     expect(await otherUserStaking.getDifficulty()).to.eq(newDiff.toString());
     reward = REWARDS_PER_BLOCK.sub(REWARDS_PER_BLOCK.div(10));
@@ -185,7 +203,7 @@ describe('ValonStaking', () => {
     await walletUserStaking.setTotalRewards(expandTo18Decimals(226080000)); // 75.36%
     newDiff = diffPrecision.sub(diffPrecision.mul(7536).div(10000));
     expect(await otherUserStaking.getDifficulty()).to.eq(newDiff.toString());
-    let difficulty10000 = bigNumberify(10000);
+    let difficulty10000 = ethers.BigNumber.from(10000);
     reward = REWARDS_PER_BLOCK.mul(newDiff).div(difficulty10000);
     expect(await walletUserStaking.getRewardsPerBlock()).to.eq(reward);
 
@@ -196,13 +214,13 @@ describe('ValonStaking', () => {
     expect(await walletUserStaking.getRewardsPerBlock()).to.eq(reward);
 
     await walletUserStaking.setTotalRewards(expandTo18Decimals(300000000)); // 100%
-    newDiff = bigNumberify(1);
+    newDiff = ethers.BigNumber.from(1);
     expect(await otherUserStaking.getDifficulty()).to.eq(newDiff.toString());
     reward = REWARDS_PER_BLOCK.mul(newDiff).div(difficulty10000);
     expect(await walletUserStaking.getRewardsPerBlock()).to.eq(reward);
 
     await walletUserStaking.setTotalRewards(expandTo18Decimals(600000000)); // 200%
-    newDiff = bigNumberify(1);
+    newDiff = ethers.BigNumber.from(1);
     expect(await otherUserStaking.getDifficulty()).to.eq(newDiff.toString());
     reward = REWARDS_PER_BLOCK.mul(newDiff).div(difficulty10000);
     expect(await walletUserStaking.getRewardsPerBlock()).to.eq(reward);
@@ -219,7 +237,7 @@ describe('ValonStaking', () => {
     await walletUserLpt1.transfer(other.address, expandTo18Decimals(100));
     await otherUserLpt1.approve(staking.address, expandTo18Decimals(10));
     await otherUserStaking.addStake(lpt1.address, expandTo18Decimals(10));
-    await provider.send('evm_mine', {});
+    await provider.send('evm_mine', [{}]);
     let  unrealizedRewards = await otherUserStaking.getUnrealizedRewards(lpt1.address, other.address);
     expect(unrealizedRewards).to.eq(REWARDS_PER_BLOCK.toString());
 
@@ -366,7 +384,7 @@ describe('ValonStaking', () => {
     expect(await otherUserStaking3.getPoolStakingPower(lpt1.address)).to.eq('1000000000000000000');
 
     //rewards
-    let blockHeight = bigNumberify(await walletUserStaking.getBlockHeight());
+    let blockHeight = ethers.BigNumber.from(await walletUserStaking.getBlockHeight());
     let user1Blocks = blockHeight.sub(user1StakeBlock);
     let user2Blocks = blockHeight.sub(user2StakeBlock);
     let user3Blocks = blockHeight.sub(user3StakeBlock);
@@ -397,7 +415,7 @@ describe('ValonStaking', () => {
     expect(await walletUserStaking.getRealizedRewards(lpt1.address, other3.address)).to.eq(user3RealizedRewards);
     user3StakeBlock = await otherUserStaking3.getStakeBlockheight(lpt1.address, other3.address);
 
-    blockHeight = bigNumberify(await walletUserStaking.getBlockHeight());
+    blockHeight = ethers.BigNumber.from(await walletUserStaking.getBlockHeight());
     user1Blocks = blockHeight.sub(user1StakeBlock);
     user2Blocks = blockHeight.sub(user2StakeBlock);
     user3Blocks = blockHeight.sub(user3StakeBlock);
@@ -706,7 +724,7 @@ describe('ValonStaking', () => {
     await otherUserLpt1.approve(other2.address, expandTo18Decimals(1)); // for mining a block
     let actualRewards = await otherUserStaking2.getActualRewards(lpt1.address, other2.address);
     expect(actualRewards).to.eq('477');
-  });*/
+  });
 
   it('stake holder count', async () => {
     const walletUserLpt1 = lpt1.connect(provider.getSigner(wallet.address));
@@ -749,12 +767,4 @@ describe('ValonStaking', () => {
 
     await otherUserLpt1.approve(other2.address, expandTo18Decimals(1)); // for mining a block
   });
-
-  //TODO
-  // - number of stakers in poolinfo -> can get avg pool share in frontend
-  // - bonus should be possible to put 0 - 1.0
-  // - pool sharing should be pool staking power (pool stake / total stakes)
-  // - investigate migrator
-  // - some way to randomly test contract?
-  // - add liquidity tax from LPT?
-})
+});

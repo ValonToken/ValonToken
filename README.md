@@ -1,8 +1,5 @@
-# Valon Token
-Token & Staking contracts for Valon Decentralized Exchange
+# Valon Master
 
-Website: https://valon.info
-<br/>Twitter: https://twitter.com/valontoken
 
 # Local Development
 
@@ -10,7 +7,7 @@ The following assumes the use of `node@>=10`.
 
 ## Install Dependencies
 
-`yarn install`
+`yarn`
 
 ## Compile Contracts
 
@@ -18,5 +15,4 @@ The following assumes the use of `node@>=10`.
 
 ## Run Tests
 
-`yarn testValonToken`<br/>
-`yarn testValonStaking`
+`yarn test`
