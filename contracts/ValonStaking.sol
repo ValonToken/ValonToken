@@ -4,9 +4,10 @@ import { SafeBEP20 } from './libs/SafeBEP20.sol';
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import { ValonToken } from './ValonToken.sol';
 
-contract ValonStaking is Ownable {
+contract ValonStaking is Ownable, ReentrancyGuard {
     using SafeMath for uint256;
     using SafeBEP20 for IBEP20;
 
@@ -120,7 +121,7 @@ contract ValonStaking is Ownable {
         }
     }
 
-    function addStake(address poolAddress, uint256 lptAmount) public {
+    function addStake(address poolAddress, uint256 lptAmount) public nonReentrant {
         require(lptAmount > 0, "BEP20: stake needs to be more than 0");
         require(address(pools[poolAddress].lpToken) != address(0), "BEP20: pool not created");
         require(getLptBalance(poolAddress, msg.sender) >= lptAmount, "BEP20: not enough balance");
@@ -136,7 +137,7 @@ contract ValonStaking is Ownable {
         blockHeights[poolAddress][msg.sender] = block.number;
     }
 
-    function removeStake(address poolAddress, uint256 lptAmount) public {
+    function removeStake(address poolAddress, uint256 lptAmount) public nonReentrant {
         require(lptAmount > 0, "BEP20: amount needs to be more than 0");
         require(lptAmount <= this.getStake(poolAddress, msg.sender), "BEP20: amount more than staking balance");
         if (_timelockActive) {
@@ -154,7 +155,7 @@ contract ValonStaking is Ownable {
         pools[poolAddress].lpToken.safeTransfer(msg.sender, lptAmount);
     }
 
-    function claimRewards(address poolAddress) public {
+    function claimRewards(address poolAddress) public nonReentrant {
         uint256 actualRewards = this.getActualRewards(poolAddress, msg.sender);
         require(actualRewards > 0, "BEP20: no rewards available");
 
