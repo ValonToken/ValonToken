@@ -159,10 +159,10 @@ contract ValonToken is Context, IBEP20, Ownable {
    *
    * - `msg.sender` must be the token owner
    */
-  function mint(uint256 amount) public onlyOwner returns (bool) {
+  /*function mint(uint256 amount) public onlyOwner returns (bool) {
     _mint(_msgSender(), amount);
     return true;
-  }
+  }*/
 
   /**
    * @dev Moves tokens `amount` from `sender` to `recipient`.
@@ -196,13 +196,13 @@ contract ValonToken is Context, IBEP20, Ownable {
    *
    * - `to` cannot be the zero address.
    */
-  function _mint(address account, uint256 amount) internal {
+  /*function _mint(address account, uint256 amount) internal {
     require(account != address(0), "BEP20: mint to the zero address");
 
     _totalSupply = _totalSupply.add(amount);
     _balances[account] = _balances[account].add(amount);
     emit Transfer(address(0), account, amount);
-  }
+  }*/
 
   /**
    * @dev Destroys `amount` tokens from `account`, reducing the
@@ -259,7 +259,7 @@ contract ValonToken is Context, IBEP20, Ownable {
     return num * (10**(18 - decimalz));
   }
 
-  function mintTo(address _to, uint256 _amount) public onlyOwner {
+  /*function mintTo(address _to, uint256 _amount) public onlyOwner {
     _mint(_to, _amount);
-  }
+  }*/
 }

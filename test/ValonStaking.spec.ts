@@ -11,7 +11,7 @@ import MockBEP20 from '../build/MockBEP20.json';
 
 chai.use(solidity)
 
-const TOTAL_SUPPLY = expandTo18Decimals(300000000);
+const TOTAL_SUPPLY = expandTo18Decimals(600000000);
 const DIFFICULTY = 100;
 const REWARD_CAP = 300000000;
 const REWARDS_PER_BLOCK = ethers.BigNumber.from('4822530864197531000');
@@ -54,8 +54,13 @@ describe('ValonStaking', () => {
     lpt3 = await deployContract(wallet, MockBEP20, [TOTAL_SUPPLY, 'LPT3', 'LPT3']);
     token = await deployContract(wallet, ValonToken, [TOTAL_SUPPLY]);
     staking = await deployContract(wallet, ValonStaking, [token.address, REWARD_CAP, DIFFICULTY, REWARDS_PER_BLOCK.toString()]);
+    expect(await token.balanceOf(wallet.address)).to.eq(TOTAL_SUPPLY);
+
     const walletUserToken = token.connect(provider.getSigner(wallet.address));
-    walletUserToken.transferOwnership(staking.address);
+    await walletUserToken.transfer(staking.address, expandTo18Decimals(REWARD_CAP));
+    expect(await token.balanceOf(staking.address)).to.eq(expandTo18Decimals(REWARD_CAP));
+
+    await walletUserToken.transferOwnership(staking.address);
   });
 
   it('create pool', async () => {
@@ -152,7 +157,7 @@ describe('ValonStaking', () => {
     expect(await otherUserStaking.getTotalStakes()).to.eq(0);
     expect(await otherUserStaking.getTotalRewards()).to.eq(REWARDS_PER_BLOCK.toString());
     expect(await otherUserStaking.getLptBalance(lpt1.address, other.address)).to.eq(expandTo18Decimals(100));
-
+    
     // difficulty calculations
     await walletUserStaking.setTotalRewards(expandTo18Decimals(30000000)); // 10%
     const diff = ethers.BigNumber.from(DIFFICULTY);
@@ -166,7 +171,7 @@ describe('ValonStaking', () => {
     expect(await otherUserStaking.getDifficulty()).to.eq(newDiff.toString());
     reward = REWARDS_PER_BLOCK.sub(REWARDS_PER_BLOCK.div(2));
     expect(await walletUserStaking.getRewardsPerBlock()).to.eq(reward);
-
+    
     await walletUserStaking.setTotalRewards(expandTo18Decimals(300000000)); // 100%
     newDiff = ethers.BigNumber.from(1);
     expect(await otherUserStaking.getDifficulty()).to.eq(newDiff.toString());
@@ -225,7 +230,7 @@ describe('ValonStaking', () => {
     reward = REWARDS_PER_BLOCK.mul(newDiff).div(difficulty10000);
     expect(await walletUserStaking.getRewardsPerBlock()).to.eq(reward);
   });
-
+  
   it('rewards', async () => {
     const walletUserLpt1 = lpt1.connect(provider.getSigner(wallet.address));
     const otherUserLpt1 = lpt1.connect(provider.getSigner(other.address));
