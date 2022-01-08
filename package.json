@@ -42,6 +42,7 @@
     "testValonToken": "mocha -g 'ValonToken' --timeout 100000",
     "testValonStaking": "mocha -g 'ValonStaking' --timeout 100000",
     "testValonCrowdsale": "mocha -g 'ValonCrowdsale' --timeout 100000",
+    "testValonIDO": "mocha -g 'ValonIDO' --timeout 100000",
     "deployValonToken": "mocha -g 'ValonTokenDeploy' --timeout 100000"
   },
   "license": "GPL-3.0-or-later",
