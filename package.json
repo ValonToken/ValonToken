@@ -12,6 +12,7 @@
   "dependencies": {
     "@openzeppelin/contracts": "^4.3.1",
     "@openzeppelin/test-helpers": "^0.5.13",
+    "@poanet/solidity-flattener": "^3.0.6",
     "solc": "^0.8.7-fixed"
   },
   "devDependencies": {
@@ -43,6 +44,8 @@
     "testValonStaking": "mocha -g 'ValonStaking' --timeout 100000",
     "testValonCrowdsale": "mocha -g 'ValonCrowdsale' --timeout 100000",
     "testValonIDO": "mocha -g 'ValonIDO' --timeout 100000",
+    "testValonMigrator": "mocha -g 'ValonMigrator' --timeout 100000",
+    "testValonLock": "mocha -g 'ValonLock' --timeout 100000",
     "deployValonToken": "mocha -g 'ValonTokenDeploy' --timeout 100000"
   },
   "license": "GPL-3.0-or-later",
