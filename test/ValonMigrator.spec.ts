@@ -32,7 +32,7 @@ describe('ValonMigrator', () => {
           secretKey: Buffer.from('7af6d902274fb54ea69a3f43cc5388aa5c3adf346f0e1d48bf698f16d2e3962d', 'hex')
         }
       ],
-      gasLimit: 9999999
+      gasLimit: '9999999999999999'
     }
   });
 
@@ -61,6 +61,9 @@ describe('ValonMigrator', () => {
     const otherUserTokenOld = tokenOld.connect(provider.getSigner(other.address));
     const otherUser2MIGRATOR = MIGRATOR.connect(provider.getSigner(other2.address));
     const otherUser2TokenOld = tokenOld.connect(provider.getSigner(other2.address));
+
+    await walletUserMIGRATOR.setClaimingAllowed(other.address, true);
+    await walletUserMIGRATOR.setClaimingAllowed(other2.address, true);
 
     otherUserTokenOld.approve(MIGRATOR.address, '10000000000000000000000');
     await walletUserTokenOld.transfer(other.address, '10000000000000000000000');
@@ -179,6 +182,9 @@ describe('ValonMigrator', () => {
     const otherUser2MIGRATOR = MIGRATOR.connect(provider.getSigner(other2.address));
     const otherUser2TokenOld = tokenOld.connect(provider.getSigner(other2.address));
 
+    await walletUserMIGRATOR.setClaimingAllowed(other.address, true);
+    await walletUserMIGRATOR.setClaimingAllowed(other2.address, true);
+
     otherUserTokenOld.approve(MIGRATOR.address, '10000000000000000000000');
     await walletUserTokenOld.transfer(other.address, '10000000000000000000000');
     otherUser2TokenOld.approve(MIGRATOR.address, '30000000000000000000000');
@@ -211,6 +217,9 @@ describe('ValonMigrator', () => {
     const otherUser2MIGRATOR = MIGRATOR.connect(provider.getSigner(other2.address));
     const otherUser2TokenOld = tokenOld.connect(provider.getSigner(other2.address));
 
+    await walletUserMIGRATOR.setClaimingAllowed(other.address, true);
+    await walletUserMIGRATOR.setClaimingAllowed(other2.address, true);
+
     otherUserTokenOld.approve(MIGRATOR.address, '10000000000000000000000');
     await walletUserTokenOld.transfer(other.address, '10000000000000000000000');
     otherUser2TokenOld.approve(MIGRATOR.address, '30000000000000000000000');
@@ -238,6 +247,9 @@ describe('ValonMigrator', () => {
     const otherUserTokenOld = tokenOld.connect(provider.getSigner(other.address));
     const otherUser2MIGRATOR = MIGRATOR.connect(provider.getSigner(other2.address));
     const otherUser2TokenOld = tokenOld.connect(provider.getSigner(other2.address));
+
+    await walletUserMIGRATOR.setClaimingAllowed(other.address, true);
+    await walletUserMIGRATOR.setClaimingAllowed(other2.address, true);
 
     otherUserTokenOld.approve(MIGRATOR.address, '10000000000000000000000');
     await walletUserTokenOld.transfer(other.address, '10000000000000000000000');
